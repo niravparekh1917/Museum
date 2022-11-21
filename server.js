@@ -36,16 +36,19 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
         next(null, {
             _id: jwt_payload._id,
             userName: jwt_payload.userName,
-            fullName: jwt_payload.fullName,
-            role: jwt_payload.role,
         });
     } else {
         next(null, false);
     }
 });
+
+// tell passport to use our "strategy"
+passport.use(strategy);
+
+// add passport as application-level middleware
+app.use(passport.initialize());
 app.use(express.json());
 app.use(cors());
-app.use(passport.initialize());
 
 app.post("/api/user/register", (req, res) => {
     userService.registerUser(req.body)
